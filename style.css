@@ -1,0 +1,335 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #0b1a2f;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 12px 8px;
+}
+
+#app {
+    width: 100%;
+    max-width: 440px;
+    background: #142b3c;
+    border-radius: 36px 36px 24px 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    border: 1px solid #3e6d8c;
+}
+
+/* Шапка */
+.top-bar {
+    background: #0d1f2c;
+    padding: 16px 18px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #3f7b9e;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #b3e5ff, #7ac7f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.auth-box {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.btn-small {
+    background: #234a61;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 40px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.user-email {
+    color: #9ac7e7;
+    font-size: 0.7rem;
+    max-width: 130px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Карта */
+.world-screen {
+    background: #1a3f52;
+    padding: 12px 10px 8px;
+}
+
+.map-container {
+    background: #1d4b61;
+    border-radius: 40px;
+    padding: 12px;
+    box-shadow: inset 0 -3px 8px #0e2d3a, 0 8px 0 #0b2b38;
+    border: 2px solid #67b1d9;
+    aspect-ratio: 1 / 1.1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty-map-message {
+    background: #0b384b;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed #3799cf;
+    color: #c2e2f5;
+    font-weight: 500;
+    font-size: 1.1rem;
+    gap: 12px;
+}
+
+.empty-map-message span {
+    font-size: 3rem;
+}
+
+.map-subtitle {
+    font-size: 0.8rem;
+    background: #0d4b61;
+    padding: 6px 16px;
+    border-radius: 60px;
+}
+
+/* Панель комнаты */
+.room-panel {
+    background: #0e2838;
+    margin: 8px 12px 16px;
+    padding: 16px 14px;
+    border-radius: 30px;
+    box-shadow: 0 10px 0 #05212b;
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.room-header h3 {
+    color: #e2f0fa;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.peer-count {
+    background: #295e78;
+    padding: 5px 12px;
+    border-radius: 40px;
+    color: white;
+    font-size: 0.8rem;
+}
+
+.room-code-box {
+    background: #1b4f64;
+    border-radius: 60px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0 12px;
+    border: 1px solid #4797bd;
+}
+
+.room-code {
+    font-size: 1.7rem;
+    letter-spacing: 3px;
+    font-weight: 800;
+    color: #fee7a0;
+}
+
+.copy-btn {
+    background: #346f8c;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.room-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 15px 0 10px;
+}
+
+.action-btn {
+    background: #2c6480;
+    border: none;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 50px;
+    flex: 1 1 0;
+    min-width: 110px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 5px 0 #134256;
+    transition: 0.07s;
+    cursor: pointer;
+}
+
+.action-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #134256;
+}
+
+.success-btn {
+    background: #3f9e6b;
+    box-shadow: 0 5px 0 #1a5f3a;
+}
+
+.danger-btn {
+    background: #ac4e4e;
+    box-shadow: 0 5px 0 #652828;
+}
+
+.join-section {
+    display: flex;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+.join-section input {
+    flex: 3;
+    background: #1f495b;
+    border: none;
+    border-radius: 60px;
+    padding: 16px;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid #4797bd;
+}
+
+.join-section input::placeholder {
+    color: #7fa9c2;
+}
+
+.btn-primary {
+    flex: 1;
+    background: #4797bd;
+    border: none;
+    border-radius: 60px;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.player-list {
+    background: #123d4f;
+    border-radius: 40px;
+    padding: 16px;
+    margin-top: 18px;
+    min-height: 80px;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-bottom: 1px solid #286277;
+    color: #cae5f3;
+}
+
+.player-item:last-child {
+    border-bottom: none;
+}
+
+/* Модальное окно */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-card {
+    background: #173e51;
+    max-width: 340px;
+    width: 90%;
+    padding: 28px 20px;
+    border-radius: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 3px solid #6bb3da;
+}
+
+.modal-title {
+    color: white;
+    text-align: center;
+    font-size: 1.4rem;
+}
+
+.modal-input {
+    background: #0b2f40;
+    border: none;
+    padding: 18px 20px;
+    border-radius: 60px;
+    color: white;
+    font-size: 1rem;
+}
+
+.modal-input:focus {
+    outline: 2px solid #7ac7f5;
+}
+
+.modal-btn {
+    background: #3f93b9;
+    border: none;
+    padding: 18px;
+    border-radius: 60px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+}
+
+.logout-btn {
+    background: #6d3f3f;
+}
+
+.hidden {
+    display: none;
+}
+
+#roomStatusIcon {
+    font-size: 1.4rem;
+}
