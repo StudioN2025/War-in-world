@@ -1,8 +1,4 @@
 // ===================== УПРАВЛЕНИЕ КОМНАТАМИ =====================
-let currentRoomId = null;
-let isHost = false;
-let roomActive = false;
-let roomPlayers = [];
 let roomUnsubscribe = null;
 
 // Генерация кода комнаты
@@ -29,12 +25,12 @@ async function createRoom() {
         const snapshot = await roomRef.once('value');
         if (!snapshot.exists()) {
             const roomData = {
-                host: currentUser.uid,
+                host: window.currentUser.uid,
                 active: true,
                 createdAt: Date.now(),
                 players: {
-                    [currentUser.uid]: {
-                        email: currentUser.email,
+                    [window.currentUser.uid]: {
+                        email: window.currentUser.email,
                         joinedAt: Date.now()
                     }
                 }
@@ -75,8 +71,8 @@ async function joinRoom(roomId) {
         throw new Error('Комната заполнена (максимум 8 игроков)');
     }
     
-    await roomRef.child('players').child(currentUser.uid).set({
-        email: currentUser.email,
+    await roomRef.child('players').child(window.currentUser.uid).set({
+        email: window.currentUser.email,
         joinedAt: Date.now()
     });
     
@@ -85,10 +81,10 @@ async function joinRoom(roomId) {
 
 // Выход из комнаты
 async function leaveRoom() {
-    if (!currentRoomId || !currentUser) return;
+    if (!window.currentRoomId || !window.currentUser) return;
     
     try {
-        await db.ref(`rooms/${currentRoomId}/players/${currentUser.uid}`).remove();
+        await db.ref(`rooms/${window.currentRoomId}/players/${window.currentUser.uid}`).remove();
     } catch (error) {
         console.error('❌ Ошибка при выходе:', error);
     }
@@ -101,10 +97,10 @@ async function leaveRoom() {
 
 // Переключение активности комнаты
 async function toggleRoomActive() {
-    if (!currentRoomId || !isHost) {
+    if (!window.currentRoomId || !window.isHost) {
         throw new Error('Только хост может переключать комнату');
     }
-    await db.ref(`rooms/${currentRoomId}/active`).set(!roomActive);
+    await db.ref(`rooms/${window.currentRoomId}/active`).set(!window.roomActive);
 }
 
 // Подписка на обновления комнаты
@@ -123,7 +119,7 @@ function subscribeToRoom(roomId, callbacks) {
             return;
         }
         
-        if (!data.players?.[currentUser?.uid]) {
+        if (!data.players?.[window.currentUser?.uid]) {
             callbacks.onPlayerRemoved?.();
             return;
         }
@@ -144,13 +140,14 @@ function subscribeToRoom(roomId, callbacks) {
             }
         }
         
-        roomActive = data.active || false;
-        isHost = data.host === currentUser?.uid;
+        window.roomActive = data.active || false;
+        window.isHost = data.host === window.currentUser?.uid;
+        window.roomPlayers = players;
         
         callbacks.onUpdate?.({
             players,
-            active: roomActive,
-            isHost,
+            active: window.roomActive,
+            isHost: window.isHost,
             hostUid: data.host
         });
     };
@@ -159,3 +156,5 @@ function subscribeToRoom(roomId, callbacks) {
     roomUnsubscribe = () => roomRef.off('value', handleRoomUpdate);
     return roomUnsubscribe;
 }
+
+console.log('✅ room.js загружен');
