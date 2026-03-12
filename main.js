@@ -1,13 +1,5 @@
 // ===================== ГЛАВНЫЙ ФАЙЛ =====================
 
-// Глобальные переменные (будут доступны из других файлов)
-let currentUser = null;
-let currentRoomId = null;
-let isHost = false;
-let roomActive = false;
-let roomPlayers = [];
-let gameLoopInterval = null;
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Игра загружается...');
     initializeApp();
@@ -22,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeApp() {
     // Показываем приветственное сообщение
     setTimeout(() => {
-        if (!currentUser) {
+        if (!window.currentUser) {
             console.log('ℹ️ Для игры требуется авторизация');
         }
     }, 2000);
@@ -122,7 +114,7 @@ function setupEventListeners() {
     if (createRoomBtn) {
         createRoomBtn.addEventListener('click', async () => {
             try {
-                if (!currentUser) {
+                if (!window.currentUser) {
                     if (typeof showAuthModal === 'function') showAuthModal();
                     return;
                 }
@@ -132,7 +124,7 @@ function setupEventListeners() {
                 
                 if (typeof createRoom === 'function') {
                     const roomId = await createRoom();
-                    currentRoomId = roomId;
+                    window.currentRoomId = roomId;
                     
                     console.log('✅ Комната создана:', roomId);
                     if (typeof showSuccess === 'function') showSuccess('Комната создана! Код: ' + roomId);
@@ -141,7 +133,7 @@ function setupEventListeners() {
                     if (typeof subscribeToRoom === 'function') {
                         subscribeToRoom(roomId, {
                             onUpdate: (data) => {
-                                roomPlayers = data.players;
+                                window.roomPlayers = data.players;
                                 if (typeof updateRoomUI === 'function') updateRoomUI(data);
                                 
                                 // Добавляем игроков в игру при обновлении
@@ -155,7 +147,7 @@ function setupEventListeners() {
                                 if (data.isHost) {
                                     const peerUids = data.players
                                         .map(p => p.uid)
-                                        .filter(uid => uid !== currentUser?.uid);
+                                        .filter(uid => uid !== window.currentUser?.uid);
                                     
                                     if (peerUids.length > 0 && typeof initAsHost === 'function') {
                                         console.log('🎮 Инициализация как хост для', peerUids.length, 'пиров');
@@ -163,7 +155,7 @@ function setupEventListeners() {
                                     }
                                 } else {
                                     const host = data.players.find(p => p.uid === data.hostUid);
-                                    if (host && host.uid !== currentUser?.uid && typeof initAsClient === 'function') {
+                                    if (host && host.uid !== window.currentUser?.uid && typeof initAsClient === 'function') {
                                         console.log('🎮 Инициализация как клиент для хоста', host.email);
                                         initAsClient(host.uid);
                                     }
@@ -172,8 +164,8 @@ function setupEventListeners() {
                             
                             onRoomDeleted: () => {
                                 console.log('ℹ️ Комната удалена');
-                                currentRoomId = null;
-                                isHost = false;
+                                window.currentRoomId = null;
+                                window.isHost = false;
                                 if (typeof updateRoomUI === 'function') updateRoomUI(null);
                                 if (typeof closeAllConnections === 'function') closeAllConnections();
                                 if (typeof showError === 'function') showError('Комната была удалена');
@@ -181,8 +173,8 @@ function setupEventListeners() {
                             
                             onPlayerRemoved: () => {
                                 console.log('ℹ️ Вы удалены из комнаты');
-                                currentRoomId = null;
-                                isHost = false;
+                                window.currentRoomId = null;
+                                window.isHost = false;
                                 if (typeof updateRoomUI === 'function') updateRoomUI(null);
                                 if (typeof closeAllConnections === 'function') closeAllConnections();
                                 if (typeof showError === 'function') showError('Вы были удалены из комнаты');
@@ -219,7 +211,7 @@ function setupEventListeners() {
             }
             
             try {
-                if (!currentUser) {
+                if (!window.currentUser) {
                     if (typeof showAuthModal === 'function') showAuthModal();
                     return;
                 }
@@ -229,7 +221,7 @@ function setupEventListeners() {
                 
                 if (typeof joinRoom === 'function') {
                     await joinRoom(code);
-                    currentRoomId = code;
+                    window.currentRoomId = code;
                     
                     console.log('✅ Присоединились к комнате:', code);
                     if (typeof showSuccess === 'function') showSuccess('Присоединение выполнено!');
@@ -238,7 +230,7 @@ function setupEventListeners() {
                     if (typeof subscribeToRoom === 'function') {
                         subscribeToRoom(code, {
                             onUpdate: (data) => {
-                                roomPlayers = data.players;
+                                window.roomPlayers = data.players;
                                 if (typeof updateRoomUI === 'function') updateRoomUI(data);
                                 
                                 // Добавляем игроков в игру при обновлении
@@ -251,7 +243,7 @@ function setupEventListeners() {
                                 if (data.isHost) {
                                     const peerUids = data.players
                                         .map(p => p.uid)
-                                        .filter(uid => uid !== currentUser?.uid);
+                                        .filter(uid => uid !== window.currentUser?.uid);
                                     
                                     if (peerUids.length > 0 && typeof initAsHost === 'function') {
                                         console.log('🎮 Инициализация как хост для', peerUids.length, 'пиров');
@@ -259,7 +251,7 @@ function setupEventListeners() {
                                     }
                                 } else {
                                     const host = data.players.find(p => p.uid === data.hostUid);
-                                    if (host && host.uid !== currentUser?.uid && typeof initAsClient === 'function') {
+                                    if (host && host.uid !== window.currentUser?.uid && typeof initAsClient === 'function') {
                                         console.log('🎮 Инициализация как клиент для хоста', host.email);
                                         initAsClient(host.uid);
                                     }
@@ -268,7 +260,7 @@ function setupEventListeners() {
                             
                             onRoomDeleted: () => {
                                 console.log('ℹ️ Комната удалена');
-                                currentRoomId = null;
+                                window.currentRoomId = null;
                                 if (typeof updateRoomUI === 'function') updateRoomUI(null);
                                 if (typeof closeAllConnections === 'function') closeAllConnections();
                                 if (typeof showError === 'function') showError('Комната была удалена');
@@ -276,7 +268,7 @@ function setupEventListeners() {
                             
                             onPlayerRemoved: () => {
                                 console.log('ℹ️ Вы удалены из комнаты');
-                                currentRoomId = null;
+                                window.currentRoomId = null;
                                 if (typeof updateRoomUI === 'function') updateRoomUI(null);
                                 if (typeof closeAllConnections === 'function') closeAllConnections();
                                 if (typeof showError === 'function') showError('Вы были удалены из комнаты');
@@ -297,19 +289,19 @@ function setupEventListeners() {
     if (toggleRoomBtn) {
         toggleRoomBtn.addEventListener('click', async () => {
             try {
-                if (!currentRoomId) {
+                if (!window.currentRoomId) {
                     if (typeof showError === 'function') showError('Вы не в комнате');
                     return;
                 }
                 
-                if (!isHost) {
+                if (!window.isHost) {
                     if (typeof showError === 'function') showError('Только хост может переключать комнату');
                     return;
                 }
                 
                 if (typeof toggleRoomActive === 'function') {
                     await toggleRoomActive();
-                    if (typeof showSuccess === 'function') showSuccess(`Комната ${!roomActive ? 'включена' : 'выключена'}`);
+                    if (typeof showSuccess === 'function') showSuccess(`Комната ${!window.roomActive ? 'включена' : 'выключена'}`);
                 }
             } catch (error) {
                 if (typeof showError === 'function') showError(error.message);
@@ -321,7 +313,7 @@ function setupEventListeners() {
     if (leaveRoomBtn) {
         leaveRoomBtn.addEventListener('click', async () => {
             try {
-                if (!currentRoomId) {
+                if (!window.currentRoomId) {
                     if (typeof showError === 'function') showError('Вы не в комнате');
                     return;
                 }
@@ -330,14 +322,14 @@ function setupEventListeners() {
                 leaveRoomBtn.textContent = '⏳ Выход...';
                 
                 // Удаляем игрока из игры
-                if (typeof game !== 'undefined' && game.removePlayerFromGame && currentUser) {
-                    game.removePlayerFromGame(currentUser.uid);
+                if (typeof game !== 'undefined' && game.removePlayerFromGame && window.currentUser) {
+                    game.removePlayerFromGame(window.currentUser.uid);
                 }
                 
                 if (typeof leaveRoom === 'function') await leaveRoom();
                 
-                currentRoomId = null;
-                isHost = false;
+                window.currentRoomId = null;
+                window.isHost = false;
                 if (typeof updateRoomUI === 'function') updateRoomUI(null);
                 if (typeof closeAllConnections === 'function') closeAllConnections();
                 
@@ -355,8 +347,8 @@ function setupEventListeners() {
     // Копирование кода комнаты
     if (copyCodeBtn) {
         copyCodeBtn.addEventListener('click', () => {
-            if (currentRoomId) {
-                navigator.clipboard.writeText(currentRoomId)
+            if (window.currentRoomId) {
+                navigator.clipboard.writeText(window.currentRoomId)
                     .then(() => {
                         if (typeof showSuccess === 'function') showSuccess('Код скопирован в буфер обмена!');
                         
@@ -367,7 +359,7 @@ function setupEventListeners() {
                         }, 200);
                     })
                     .catch(() => {
-                        alert('Код комнаты: ' + currentRoomId);
+                        alert('Код комнаты: ' + window.currentRoomId);
                     });
             } else {
                 if (typeof showError === 'function') showError('Нет активной комнаты');
@@ -381,12 +373,12 @@ function setupEventListeners() {
     
     if (startGameBtn) {
         startGameBtn.addEventListener('click', () => {
-            if (!isHost) {
+            if (!window.isHost) {
                 if (typeof showError === 'function') showError('Только хост может запустить игру');
                 return;
             }
             
-            if (!currentRoomId) {
+            if (!window.currentRoomId) {
                 if (typeof showError === 'function') showError('Сначала создайте или войдите в комнату');
                 return;
             }
@@ -397,7 +389,7 @@ function setupEventListeners() {
             }
             
             // Добавляем всех игроков в игру
-            roomPlayers.forEach(p => {
+            window.roomPlayers.forEach(p => {
                 if (game.addPlayerToGame) {
                     game.addPlayerToGame(p.uid, p.email);
                 }
@@ -409,8 +401,8 @@ function setupEventListeners() {
             }
             
             // Оповещаем всех через P2P
-            if (isHost && typeof dataChannels !== 'undefined') {
-                dataChannels.forEach(channel => {
+            if (window.isHost && window.dataChannels.size > 0) {
+                window.dataChannels.forEach(channel => {
                     if (channel.readyState === 'open') {
                         channel.send(JSON.stringify({ type: 'START_GAME' }));
                     }
@@ -425,7 +417,7 @@ function setupEventListeners() {
     
     if (stopGameBtn) {
         stopGameBtn.addEventListener('click', () => {
-            if (!isHost) {
+            if (!window.isHost) {
                 if (typeof showError === 'function') showError('Только хост может остановить игру');
                 return;
             }
@@ -435,8 +427,8 @@ function setupEventListeners() {
             }
             
             // Оповещаем всех через P2P
-            if (isHost && typeof dataChannels !== 'undefined') {
-                dataChannels.forEach(channel => {
+            if (window.isHost && window.dataChannels.size > 0) {
+                window.dataChannels.forEach(channel => {
                     if (channel.readyState === 'open') {
                         channel.send(JSON.stringify({ type: 'STOP_GAME' }));
                     }
@@ -487,8 +479,8 @@ function setupEventListeners() {
 
 // Пинг для отслеживания активности (каждые 15 секунд)
 setInterval(() => {
-    if (currentUser && currentRoomId && db) {
-        db.ref(`rooms/${currentRoomId}/players/${currentUser.uid}/ping`)
+    if (window.currentUser && window.currentRoomId && db) {
+        db.ref(`rooms/${window.currentRoomId}/players/${window.currentUser.uid}/ping`)
             .set(Date.now())
             .then(() => console.log('📡 Пинг отправлен'))
             .catch(err => console.log('⚠️ Пинг не удался:', err.message));
@@ -508,8 +500,7 @@ window.addEventListener('offline', () => {
 
 // Предотвращение случайного закрытия страницы
 window.addEventListener('beforeunload', (e) => {
-    if (currentRoomId && isHost) {
-        // Если хост закрывает страницу, предупреждаем
+    if (window.currentRoomId && window.isHost) {
         e.preventDefault();
         e.returnValue = 'Вы хост комнаты. Выход может прервать игру других игроков.';
     }
@@ -534,13 +525,5 @@ function setButtonsLoading(loading) {
         }
     });
 }
-
-// Экспортируем функции в глобальную область
-window.main = {
-    initializeApp,
-    testConnection,
-    setupEventListeners,
-    setButtonsLoading
-};
 
 console.log('✅ main.js полностью загружен');
