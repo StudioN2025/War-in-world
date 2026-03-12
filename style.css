@@ -403,3 +403,115 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #5fa9cf;
 }
+/* Добавить в конец файла style.css */
+
+.game-header {
+    background: #1d4b61;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #3f7b9e;
+}
+
+.date-display {
+    color: #fee7a0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-shadow: 0 2px 0 #0b2b38;
+}
+
+.game-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.game-btn {
+    background: #2c6480;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #134256;
+    transition: 0.07s;
+}
+
+.game-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #134256;
+}
+
+.country-panel {
+    background: #0e2838;
+    margin: 8px 12px;
+    padding: 16px 14px;
+    border-radius: 20px;
+    box-shadow: 0 5px 0 #05212b;
+}
+
+.country-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #286277;
+}
+
+.country-header h3 {
+    color: #fee7a0;
+    font-size: 1.3rem;
+}
+
+.country-color {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.country-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    color: #cae5f3;
+    font-size: 0.9rem;
+    padding: 5px;
+    background: #123d4f;
+    border-radius: 10px;
+}
+
+.stat-row span:last-child {
+    color: #fee7a0;
+    font-weight: bold;
+}
+
+.province {
+    position: absolute;
+    border: 2px solid #0b2b38;
+    background: #1d4b61;
+    color: white;
+    font-size: 0.8rem;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.province:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    border-color: #fee7a0;
+}
+
+.province.owned {
+    border-color: gold;
+    box-shadow: 0 0 10px gold;
+}
