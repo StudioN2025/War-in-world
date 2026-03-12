@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>СОЗДАНИЕ СТРАНЫ · P2P</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Шапка с авторизацией -->
+        <div class="top-bar">
+            <div class="logo">🌍 СОЗДАНИЕ СТРАНЫ</div>
+            <div class="auth-box">
+                <div class="user-email" id="userEmail">не авторизован</div>
+                <button id="authBtn" class="btn-small">🔑 вход</button>
+            </div>
+        </div>
+
+        <!-- Карта мира (пустая) -->
+        <div class="world-screen">
+            <div class="map-container">
+                <div class="empty-map-message">
+                    <span>🗺️</span>
+                    <div>пустая земля</div>
+                    <div class="map-subtitle">выбери провинцию</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Панель комнаты -->
+        <div class="room-panel" id="roomPanel">
+            <div class="room-header">
+                <h3>⚡ КОМНАТА <span id="roomStatusIcon">⚫</span></h3>
+                <span class="peer-count" id="peerCounter">0 игроков</span>
+            </div>
+
+            <!-- Код комнаты -->
+            <div class="room-code-box">
+                <span class="room-code" id="roomCodeDisplay">----</span>
+                <button class="copy-btn" id="copyCodeBtn">📋 копия</button>
+            </div>
+
+            <!-- Действия с комнатой -->
+            <div class="room-actions">
+                <button class="action-btn success-btn" id="createRoomBtn">➕ создать</button>
+                <button class="action-btn" id="toggleRoomBtn">⏯️ вкл/выкл</button>
+                <button class="action-btn danger-btn" id="leaveRoomBtn">🚪 выйти</button>
+            </div>
+
+            <!-- Присоединение по коду -->
+            <div class="join-section">
+                <input type="text" id="joinCodeInput" placeholder="код комнаты" maxlength="6">
+                <button id="joinRoomBtn" class="btn-primary">вход</button>
+            </div>
+
+            <!-- Список игроков -->
+            <div class="player-list" id="playerListContainer">
+                <div class="player-item">
+                    <span>👤</span> <span>вы (хост) 👑</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка авторизации -->
+    <div id="authModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h3 class="modal-title">🔐 Вход / Регистрация</h3>
+            <input type="email" id="loginEmail" class="modal-input" placeholder="email" value="test@example.com">
+            <input type="password" id="loginPassword" class="modal-input" placeholder="пароль" value="123456">
+            <button id="loginSubmitBtn" class="modal-btn">📧 войти</button>
+            <button id="logoutBtn" class="modal-btn logout-btn">🚪 выйти</button>
+        </div>
+    </div>
+
+    <!-- Подключение скриптов -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="room.js"></script>
+    <script src="p2p.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
