@@ -73,10 +73,10 @@
 
     <!-- Подключаем скрипты в правильном порядке -->
     <script src="firebase-config.js"></script>
-    <script src="auth.js"></script>
+    <script src="ui.js"></script>        <!-- Сначала UI функции -->
+    <script src="auth.js"></script>      <!-- Потом auth который их использует -->
     <script src="room.js"></script>
     <script src="p2p.js"></script>
-    <script src="ui.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
