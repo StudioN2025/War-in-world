@@ -1,4 +1,5 @@
-// Элементы DOM
+// ===================== УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ =====================
+// DOM элементы
 const userEmailSpan = document.getElementById('userEmail');
 const authBtn = document.getElementById('authBtn');
 const authModal = document.getElementById('authModal');
@@ -17,7 +18,17 @@ const peerCounter = document.getElementById('peerCounter');
 const roomStatusIcon = document.getElementById('roomStatusIcon');
 const playerListContainer = document.getElementById('playerListContainer');
 
-// Обновление UI пользователя
+// Функции отображения
+function showError(message) {
+    console.error('❌', message);
+    alert('❌ ' + message);
+}
+
+function showSuccess(message) {
+    console.log('✅', message);
+    alert('✅ ' + message);
+}
+
 function updateUserUI(user) {
     if (user) {
         userEmailSpan.textContent = user.email;
@@ -28,17 +39,11 @@ function updateUserUI(user) {
     }
 }
 
-// Показать/скрыть модалку
 function showAuthModal() {
     if (authModal) {
         authModal.classList.remove('hidden');
-        // Автозаполнение тестовыми данными
-        if (!loginEmail.value) {
-            loginEmail.value = 'test@example.com';
-        }
-        if (!loginPassword.value) {
-            loginPassword.value = '123456';
-        }
+        loginEmail.value = '';
+        loginPassword.value = '';
     }
 }
 
@@ -48,17 +53,6 @@ function hideAuthModal() {
     }
 }
 
-// Функция для показа ошибок
-function showError(message) {
-    alert('❌ ' + message);
-}
-
-// Функция для показа успеха
-function showSuccess(message) {
-    alert('✅ ' + message);
-}
-
-// Обновление интерфейса комнаты
 function updateRoomUI(roomData) {
     if (!roomData || !roomData.players) {
         roomCodeDisplay.textContent = '----';
@@ -74,7 +68,6 @@ function updateRoomUI(roomData) {
     peerCounter.textContent = `${players.length} игроков`;
     roomStatusIcon.textContent = active ? '🟢' : '🔴';
     
-    // Отрисовка списка игроков
     playerListContainer.innerHTML = '';
     
     if (players.length === 0) {
@@ -82,7 +75,6 @@ function updateRoomUI(roomData) {
         return;
     }
     
-    // Сортируем: текущий игрок первый
     const sortedPlayers = [...players].sort((a, b) => {
         if (a.uid === currentUser?.uid) return -1;
         if (b.uid === currentUser?.uid) return 1;
@@ -98,29 +90,15 @@ function updateRoomUI(roomData) {
         
         div.innerHTML = `
             <span>${isMe ? '⭐' : '👤'}</span>
-            <span style="flex:1">${player.email || 'Без email'} ${isMe ? '(вы)' : ''}</span>
+            <span style="flex:1">${player.email || 'Игрок'} ${isMe ? '(вы)' : ''}</span>
             ${isHostPlayer ? '<span class="crown">👑</span>' : ''}
         `;
         
         playerListContainer.appendChild(div);
     });
     
-    // Обновление кнопки переключения для хоста
     if (userIsHost) {
         toggleRoomBtn.style.background = active ? '#ac9f3f' : '#3f9e6b';
         toggleRoomBtn.style.boxShadow = active ? '0 5px 0 #6b4f1a' : '0 5px 0 #1a5f3a';
     }
 }
-
-// Копирование кода
-copyCodeBtn.addEventListener('click', () => {
-    if (currentRoomId) {
-        navigator.clipboard?.writeText(currentRoomId)
-            .then(() => {
-                showSuccess('Код скопирован!');
-            })
-            .catch(() => {
-                alert('Код: ' + currentRoomId);
-            });
-    }
-});
