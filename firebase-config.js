@@ -8,14 +8,33 @@ const firebaseConfig = {
   appId: "1:1069752017417:web:a5741722acd64da9ed8ed8"
 };
 
-// Инициализация Firebase
-firebase.initializeApp(firebaseConfig);
+// Проверка конфигурации
+console.log('Firebase Config:', {
+    ...firebaseConfig,
+    apiKey: '***' // Скрываем ключ в логах
+});
+
+// Инициализация Firebase с проверкой
+if (!firebase.apps.length) {
+    try {
+        firebase.initializeApp(firebaseConfig);
+        console.log('✅ Firebase инициализирован');
+    } catch (error) {
+        console.error('❌ Ошибка инициализации Firebase:', error);
+    }
+} else {
+    firebase.app();
+    console.log('✅ Firebase уже инициализирован');
+}
 
 // Глобальные ссылки
 const auth = firebase.auth();
 const db = firebase.database();
 
-// Экспорт для использования в других файлах
+// Настройка Auth для работы с email/паролем
+auth.useDeviceLanguage();
+
+// Экспорт
 window.firebaseApp = firebase;
 window.auth = auth;
 window.db = db;
