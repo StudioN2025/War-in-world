@@ -1,6 +1,23 @@
 // ===================== УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ =====================
 let currentUser = null;
 
+// Функция для понятных сообщений об ошибках
+function getAuthErrorMessage(errorCode) {
+    const messages = {
+        'auth/invalid-email': 'Некорректный email',
+        'auth/user-disabled': 'Пользователь заблокирован',
+        'auth/user-not-found': 'Пользователь не найден',
+        'auth/wrong-password': 'Неверный пароль',
+        'auth/email-already-in-use': 'Этот email уже используется',
+        'auth/weak-password': 'Пароль должен быть минимум 6 символов',
+        'auth/operation-not-allowed': 'Вход по Email/Password не включен в консоли Firebase',
+        'auth/too-many-requests': 'Слишком много попыток. Попробуйте позже',
+        'auth/network-request-failed': 'Ошибка сети. Проверьте подключение',
+        'auth/invalid-login-credentials': 'Неверный email или пароль'
+    };
+    return messages[errorCode] || 'Ошибка авторизации: ' + errorCode;
+}
+
 // Слушатель состояния аутентификации
 auth.onAuthStateChanged(user => {
     currentUser = user;
@@ -21,9 +38,7 @@ async function loginWithEmail(email, password) {
             throw new Error('Введите email и пароль');
         }
         
-        if (password.length < 6) {
-            throw new Error('Пароль должен быть минимум 6 символов');
-        }
+        email = email.trim().toLowerCase();
         
         console.log('🔑 Попытка входа для:', email);
         
@@ -35,33 +50,19 @@ async function loginWithEmail(email, password) {
         } catch (loginError) {
             console.log('❌ Ошибка входа:', loginError.code);
             
-            // Если пользователь не найден - регистрируем
-            if (loginError.code === 'auth/user-not-found') {
+            // Если пользователь не найден - пробуем зарегистрировать
+            if (loginError.code === 'auth/user-not-found' || loginError.code === 'auth/invalid-login-credentials') {
                 try {
+                    console.log('📝 Пробуем зарегистрировать нового пользователя...');
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                     console.log('✅ Регистрация успешна');
                     return userCredential.user;
                 } catch (regError) {
                     console.error('❌ Ошибка регистрации:', regError.code);
-                    
-                    if (regError.code === 'auth/weak-password') {
-                        throw new Error('Слишком простой пароль (минимум 6 символов)');
-                    } else if (regError.code === 'auth/email-already-in-use') {
-                        throw new Error('Этот email уже используется');
-                    } else {
-                        throw new Error('Ошибка регистрации: ' + regError.message);
-                    }
+                    throw new Error(getAuthErrorMessage(regError.code));
                 }
-            } else if (loginError.code === 'auth/wrong-password') {
-                throw new Error('Неверный пароль');
-            } else if (loginError.code === 'auth/invalid-email') {
-                throw new Error('Некорректный email');
-            } else if (loginError.code === 'auth/too-many-requests') {
-                throw new Error('Слишком много попыток. Попробуйте позже');
-            } else if (loginError.code === 'auth/network-request-failed') {
-                throw new Error('Ошибка сети. Проверьте подключение');
             } else {
-                throw new Error('Ошибка: ' + loginError.message);
+                throw new Error(getAuthErrorMessage(loginError.code));
             }
         }
     } catch (error) {
