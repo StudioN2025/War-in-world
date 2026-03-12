@@ -1,5 +1,4 @@
 // ===================== УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ =====================
-let currentUser = null;
 
 // Функция для понятных сообщений об ошибках
 function getAuthErrorMessage(errorCode) {
@@ -20,7 +19,7 @@ function getAuthErrorMessage(errorCode) {
 
 // Слушатель состояния аутентификации
 auth.onAuthStateChanged(user => {
-    currentUser = user;
+    window.currentUser = user;
     if (user) {
         console.log('✅ Пользователь авторизован:', user.email);
         if (typeof updateUserUI === 'function') {
@@ -80,8 +79,8 @@ async function loginWithEmail(email, password) {
 // Выход из системы
 async function logout() {
     try {
-        if (typeof currentRoomId !== 'undefined' && currentRoomId && currentUser) {
-            await db.ref(`rooms/${currentRoomId}/players/${currentUser.uid}`).remove();
+        if (window.currentRoomId && window.currentUser) {
+            await db.ref(`rooms/${window.currentRoomId}/players/${window.currentUser.uid}`).remove();
         }
         await auth.signOut();
         console.log('✅ Выход выполнен');
@@ -96,16 +95,18 @@ async function logout() {
 
 // Получение текущего пользователя
 function getCurrentUser() {
-    return currentUser;
+    return window.currentUser;
 }
 
 // Проверка авторизации
 function requireAuth() {
-    if (!currentUser) {
+    if (!window.currentUser) {
         if (typeof showAuthModal === 'function') {
             showAuthModal();
         }
         throw new Error('Требуется авторизация');
     }
-    return currentUser;
+    return window.currentUser;
 }
+
+console.log('✅ auth.js загружен');
